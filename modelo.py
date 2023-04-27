@@ -70,10 +70,8 @@ class MyCurves(VMobject):
     def get_line(self, r):
         return ParametricFunction(
             lambda t: r*np.array([
-                (self.CONFIG['R']-self.CONFIG['r'])*np.cos(t)+self.CONFIG['d'] *
-                np.cos((self.CONFIG['R']-self.CONFIG['r'])/self.CONFIG['r']*t),
-                (self.CONFIG['R']-self.CONFIG['r'])*np.sin(t)-self.CONFIG['d'] *
-                np.sin((self.CONFIG['R']-self.CONFIG['r'])/self.CONFIG['r']*t),
+                np.cos(t),
+                np.sin(t),
                 0
             ]),
             t_range=[0, TAU]
@@ -84,4 +82,4 @@ class MakeEffect(Scene):
     def construct(self):
         suceso = MyCurves().set_height(config['frame_height'])
         self.play(FadeIn(suceso))
-        self.wait(20)
+        self.wait(10)
