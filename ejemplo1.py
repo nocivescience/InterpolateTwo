@@ -2,11 +2,11 @@ from manim import *
 class StartTemplate(VMobject):
     CONFIG={
         'start_time': 0,
-        'frequency': .25,
-        'max_ratio_shown': 2,
+        'frequency': .1,
+        'max_ratio_shown': .5,
         'use_copy': True
     }
-    def __init__(self, template,**kwargs):
+    def __init__(self, template, rand_freq,**kwargs):
         VMobject.__init__(self, **kwargs)
         if self.CONFIG['use_copy']:
             self.ghost_mob = template.copy().fade(1)
@@ -15,6 +15,7 @@ class StartTemplate(VMobject):
             self.ghost_mob = template
         self.shown_mob = template.copy()
         self.shown_mob.clear_updaters()
+        self.rand_freq = rand_freq
         self.add(self.shown_mob)
         self.total_time = self.CONFIG['start_time']
         def update(mob, dt):
@@ -26,8 +27,8 @@ class StartTemplate(VMobject):
             mob.shown_mob.pointwise_become_partial(
                 mob.ghost_mob,
                 # que pasa si saco el maximo?
-                max(interpolate(-mob.CONFIG['max_ratio_shown'], 1, alpha), 0),
-                min(interpolate(0, 1+mob.CONFIG['max_ratio_shown'], alpha), 1)
+                1.5*alpha-.4,
+                1.5*alpha
             )
         self.add_updater(update)
 class Curves(VMobject):
@@ -45,7 +46,7 @@ class Curves(VMobject):
     def __init__(self, **kwargs):
         VMobject.__init__(self, **kwargs)
         lines = self.get_lines()
-        self.add(*[StartTemplate(line)
+        self.add(*[StartTemplate(line, np.random.random())
             for line in lines
         ])
         self.randomize_times()
@@ -75,5 +76,5 @@ class Curves(VMobject):
 class EffectScene(Scene):
     def construct(self):
         effect_curves=Curves().set_height(config['frame_height'])
-        self.play(FadeIn(effect_curves))
-        self.wait(5)
+        self.add(effect_curves)
+        self.wait(15)
